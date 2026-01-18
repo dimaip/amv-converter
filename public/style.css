@@ -1,0 +1,182 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #1a1a2e;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  max-width: 480px;
+  width: 100%;
+  background: #16213e;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+h1 {
+  margin: 0 0 8px 0;
+  color: #e94560;
+  font-size: 28px;
+}
+
+.subtitle {
+  color: #a0a0a0;
+  margin: 0 0 32px 0;
+  font-size: 14px;
+}
+
+.file-label {
+  display: block;
+  padding: 40px 20px;
+  border: 2px dashed #3a3a5c;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 12px;
+}
+
+.file-label:hover {
+  border-color: #e94560;
+  background: rgba(233, 69, 96, 0.05);
+}
+
+.file-icon {
+  display: block;
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+#file-name {
+  color: #a0a0a0;
+  font-size: 14px;
+}
+
+.file-label.has-file #file-name {
+  color: #4ecca3;
+}
+
+.supported {
+  color: #666;
+  font-size: 12px;
+  margin: 0 0 20px 0;
+}
+
+button {
+  width: 100%;
+  padding: 14px 24px;
+  background: #e94560;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: #d63851;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  background: #3a3a5c;
+  cursor: not-allowed;
+}
+
+.progress-bar {
+  height: 8px;
+  background: #3a3a5c;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #e94560, #4ecca3);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+#status-text {
+  color: #a0a0a0;
+  margin: 0;
+  font-size: 14px;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: #4ecca3;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 32px;
+  color: white;
+}
+
+.error-icon {
+  width: 64px;
+  height: 64px;
+  background: #e94560;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  font-size: 32px;
+  color: white;
+}
+
+#result-section p {
+  color: #4ecca3;
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.download-btn {
+  display: inline-block;
+  padding: 14px 32px;
+  background: #4ecca3;
+  color: #1a1a2e;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.download-btn:hover {
+  background: #3db892;
+  transform: translateY(-1px);
+}
+
+.error {
+  color: #e94560 !important;
+}
+
+#retry-btn {
+  background: #3a3a5c;
+  margin-top: 8px;
+}
+
+#retry-btn:hover {
+  background: #4a4a6c;
+}
+
+[hidden] {
+  display: none !important;
+}

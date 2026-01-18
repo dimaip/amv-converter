@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: amv-converter
+    runtime: docker
+    plan: free
+    healthCheckPath: /
