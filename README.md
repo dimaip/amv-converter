@@ -1,35 +1,60 @@
----
-title: AMV Video Converter
-emoji: 🎬
-colorFrom: purple
-colorTo: blue
-sdk: docker
-pinned: false
-license: mit
----
+# AMV Converter
 
-# AMV Video Converter
+A simple Mac app to convert videos to AMV format for Digma M5 and similar MP4 players.
 
-Convert any video to AMV format for Digma M5 and similar MP4 players.
+![AMV Converter Screenshot](https://img.shields.io/badge/platform-macOS-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+
+## Download
+
+**[Download AMV Converter for Mac (Apple Silicon)](https://github.com/dimaip/amv-converter/releases/latest)**
 
 ## Features
 
+- Drag & drop or click to upload videos
 - Supports MP4, AVI, MKV, WebM, MOV, M4V, FLV, WMV input formats
-- Outputs 320x240 resolution at 14 fps
-- Automatic audio conversion to ADPCM IMA AMV
-- Handles videos with or without audio tracks
+- Converts to AMV format (320x240, 14fps)
 - Progress tracking during conversion
+- Handles videos with or without audio tracks
 
 ## Usage
 
-1. Upload your video file (up to 1GB)
-2. Wait for conversion to complete
-3. Download the converted .amv file
-4. Transfer to your device
+1. Download the DMG from [Releases](https://github.com/dimaip/amv-converter/releases)
+2. Open the DMG and drag the app to Applications
+3. Launch AMV Converter
+4. Upload your video file (up to 1GB)
+5. Wait for conversion to complete
+6. Download the converted .amv file
+7. Transfer to your Digma M5 or compatible device
 
-## Technical Details
+## Technical Specs
 
-- Video codec: AMV
-- Audio codec: ADPCM IMA AMV (mono, 22050 Hz)
-- Resolution: 320x240
-- Frame rate: 14 fps
+The converter outputs files with these specifications:
+
+| Property | Value |
+|----------|-------|
+| Video codec | AMV |
+| Resolution | 320x240 |
+| Frame rate | 14 fps |
+| Audio codec | ADPCM IMA AMV |
+| Audio | Mono, 22050 Hz |
+
+## Building from Source
+
+```bash
+# Clone the repo
+git clone https://github.com/dimaip/amv-converter.git
+cd amv-converter
+
+# Install dependencies
+npm install
+
+# Run in development
+npm run server
+
+# Build Mac app
+npm run build:dmg
+```
+
+## License
+
+MIT

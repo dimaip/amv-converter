@@ -1,5 +1,6 @@
 node_modules/
 uploads/
 converted/
+dist/
 .DS_Store
 *.log

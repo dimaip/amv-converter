@@ -2,10 +2,12 @@
   "name": "amv-converter",
   "version": "1.0.0",
   "description": "Video to AMV converter for Digma M5 player",
-  "main": "server.js",
+  "main": "electron.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "electron .",
+    "server": "node server.js",
+    "build": "electron-builder --mac",
+    "build:dmg": "electron-builder --mac dmg"
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -17,5 +19,36 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0"
+  },
+  "build": {
+    "appId": "com.dimaip.amv-converter",
+    "productName": "AMV Converter",
+    "mac": {
+      "category": "public.app-category.video",
+      "target": "dmg"
+    },
+    "files": [
+      "electron.js",
+      "server.js",
+      "public/**/*",
+      "node_modules/**/*",
+      "!node_modules/ffmpeg-static/ffmpeg",
+      "!node_modules/ffprobe-static/bin/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "node_modules/ffmpeg-static/ffmpeg",
+        "to": "ffmpeg"
+      },
+      {
+        "from": "node_modules/ffprobe-static/bin/darwin/arm64/ffprobe",
+        "to": "ffprobe"
+      }
+    ],
+    "asarUnpack": []
   }
 }

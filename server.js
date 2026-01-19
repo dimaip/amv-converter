@@ -6,35 +6,54 @@ const path = require('path');
 const fs = require('fs');
 const { execSync } = require('child_process');
 
-// Use system FFmpeg if available, otherwise use bundled binaries
+// Setup FFmpeg paths
 function setupFfmpeg() {
-  try {
-    execSync('which ffmpeg', { stdio: 'ignore' });
-    console.log('Using system FFmpeg');
-  } catch {
-    const ffmpegPath = require('ffmpeg-static');
-    const ffprobePath = require('ffprobe-static').path;
+  // Check if running in packaged Electron app
+  const isPackaged = process.env.DATA_DIR && process.env.DATA_DIR.includes('Application Support');
+
+  if (isPackaged) {
+    // In packaged app, binaries are in Resources folder (next to app.asar)
+    const resourcesPath = path.join(__dirname, '..');
+    const ffmpegPath = path.join(resourcesPath, 'ffmpeg');
+    const ffprobePath = path.join(resourcesPath, 'ffprobe');
     ffmpeg.setFfmpegPath(ffmpegPath);
     ffmpeg.setFfprobePath(ffprobePath);
-    console.log('Using bundled FFmpeg');
+    console.log('Using packaged FFmpeg:', ffmpegPath);
+  } else {
+    // In development, use ffmpeg-static
+    try {
+      execSync('which ffmpeg', { stdio: 'ignore' });
+      console.log('Using system FFmpeg');
+    } catch {
+      const ffmpegPath = require('ffmpeg-static');
+      const ffprobePath = require('ffprobe-static').path;
+      ffmpeg.setFfmpegPath(ffmpegPath);
+      ffmpeg.setFfprobePath(ffprobePath);
+      console.log('Using bundled FFmpeg');
+    }
   }
 }
 setupFfmpeg();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 51234;
+
+// Use DATA_DIR from Electron, or current directory for dev
+const dataDir = process.env.DATA_DIR || '.';
+const uploadsDir = path.join(dataDir, 'uploads');
+const convertedDir = path.join(dataDir, 'converted');
 
 // In-memory job storage
 const jobs = new Map();
 
 // Ensure directories exist
-['./uploads', './converted'].forEach(dir => {
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir);
+[uploadsDir, convertedDir].forEach(dir => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
 // Multer setup for file uploads
 const storage = multer.diskStorage({
-  destination: './uploads',
+  destination: uploadsDir,
   filename: (req, file, cb) => cb(null, `${uuidv4()}${path.extname(file.originalname)}`)
 });
 
@@ -52,8 +71,9 @@ const upload = multer({
   }
 });
 
-// Serve static files
-app.use(express.static('public'));
+// Serve static files (handle both dev and packaged app paths)
+const publicPath = path.join(__dirname, 'public');
+app.use(express.static(publicPath));
 
 // POST /api/convert - Upload and start conversion
 app.post('/api/convert', (req, res) => {
@@ -71,7 +91,7 @@ app.post('/api/convert', (req, res) => {
 
     const jobId = uuidv4();
     const inputPath = req.file.path;
-    const outputPath = `./converted/${jobId}.amv`;
+    const outputPath = path.join(convertedDir, `${jobId}.amv`);
     const originalName = path.basename(req.file.originalname, path.extname(req.file.originalname));
 
     jobs.set(jobId, {
