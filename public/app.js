@@ -11,8 +11,12 @@ const downloadLink = document.getElementById('download-link');
 const errorSection = document.getElementById('error-section');
 const errorText = document.getElementById('error-text');
 const retryBtn = document.getElementById('retry-btn');
+const cancelBtn = document.getElementById('cancel-btn');
+const convertMoreBtn = document.getElementById('convert-more-btn');
 
 let selectedFile = null;
+let currentJobId = null;
+let isCancelled = false;
 
 fileInput.addEventListener('change', (e) => {
   selectedFile = e.target.files[0];
@@ -34,9 +38,13 @@ convertBtn.addEventListener('click', () => {
 });
 
 retryBtn.addEventListener('click', reset);
+cancelBtn.addEventListener('click', cancelConversion);
+convertMoreBtn.addEventListener('click', reset);
 
 function reset() {
   selectedFile = null;
+  currentJobId = null;
+  isCancelled = false;
   fileInput.value = '';
   fileName.textContent = 'Choose a video file';
   fileLabel.classList.remove('has-file');
@@ -49,21 +57,39 @@ function reset() {
   errorSection.hidden = true;
 }
 
+async function cancelConversion() {
+  isCancelled = true;
+  if (currentJobId) {
+    try {
+      await fetch(`/api/cancel/${currentJobId}`, { method: 'POST' });
+    } catch (e) {
+      // Ignore errors during cancel
+    }
+  }
+  reset();
+}
+
 async function startConversion(file) {
   uploadSection.hidden = true;
   progressSection.hidden = false;
   resultSection.hidden = true;
   errorSection.hidden = true;
+  isCancelled = false;
 
   try {
     // Upload file
     const jobId = await uploadFile(file);
+    if (isCancelled) return;
+
+    currentJobId = jobId;
 
     // Poll for progress
     await pollStatus(jobId);
 
   } catch (err) {
-    showError(err.message || 'An unexpected error occurred');
+    if (!isCancelled) {
+      showError(err.message || 'An unexpected error occurred');
+    }
   }
 }
 
@@ -103,6 +129,8 @@ function uploadFile(file) {
 
 async function pollStatus(jobId) {
   while (true) {
+    if (isCancelled) return;
+
     const response = await fetch(`/api/status/${jobId}`);
     const data = await response.json();
 

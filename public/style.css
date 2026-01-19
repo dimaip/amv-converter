@@ -168,12 +168,16 @@ button:disabled {
   color: #e94560 !important;
 }
 
-#retry-btn {
+#retry-btn,
+#cancel-btn,
+#convert-more-btn {
   background: #3a3a5c;
-  margin-top: 8px;
+  margin-top: 16px;
 }
 
-#retry-btn:hover {
+#retry-btn:hover,
+#cancel-btn:hover,
+#convert-more-btn:hover {
   background: #4a4a6c;
 }
 

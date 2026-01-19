@@ -125,6 +125,23 @@ app.get('/api/status/:jobId', (req, res) => {
   });
 });
 
+// POST /api/cancel/:jobId - Cancel conversion
+app.post('/api/cancel/:jobId', (req, res) => {
+  const job = jobs.get(req.params.jobId);
+  if (!job) {
+    return res.status(404).json({ error: true, message: 'Job not found' });
+  }
+  if (job.command) {
+    job.command.kill('SIGKILL');
+  }
+  job.status = 'cancelled';
+  // Cleanup files
+  if (job.inputPath) fs.unlink(job.inputPath, () => {});
+  if (job.outputPath) fs.unlink(job.outputPath, () => {});
+  jobs.delete(req.params.jobId);
+  res.json({ success: true });
+});
+
 // GET /api/download/:jobId - Download converted file
 app.get('/api/download/:jobId', (req, res) => {
   const job = jobs.get(req.params.jobId);
@@ -183,6 +200,12 @@ async function convertToAMV(inputPath, outputPath, jobId) {
 
   if (!hasAudio) {
     outputOptions.push('-shortest');
+  }
+
+  // Store command reference for cancellation
+  const job = jobs.get(jobId);
+  if (job) {
+    job.command = cmd;
   }
 
   cmd.outputOptions(outputOptions)
